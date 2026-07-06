@@ -1,41 +1,27 @@
 import { before } from "@vendetta/patcher";
 import { findByProps } from "@vendetta/metro";
-import Settings from "./settings";
 
 const MessageEvents = findByProps("sendMessage");
 
-let unpatch: () => void;
-
-function shouldIgnore(content: string) {
-    if (!content.trim()) return true;
-
-    // Slash commands
-    if (content.startsWith("/")) return true;
-
-    return false;
-}
+let unpatch;
 
 export default {
     onLoad() {
         unpatch = before("sendMessage", MessageEvents, ([, message]) => {
-            if (typeof message?.content !== "string") return;
+            if (!message || typeof message.content !== "string") return;
 
-            let content = message.content.trimEnd();
+            const content = message.content.trimEnd();
 
-            if (shouldIgnore(content)) return;
+            if (!content) return;
+            if (content.startsWith("/")) return;
 
-            // Chỉ cần cuối chưa là "." thì thêm
             if (!content.endsWith(".")) {
-                content += ".";
+                message.content = content + ".";
             }
-
-            message.content = content;
         });
     },
 
-    onunload() {
-        unpatch?.();
-    },
-
-    settings: Settings
+    onUnload() {
+        if (unpatch) unpatch();
+    }
 };
