@@ -1,0 +1,14 @@
+{
+  "name": "Auto Period",
+  "description": "Automatically adds a period to the end of outgoing messages.",
+  "authors": [
+    {
+      "name": "Rei",
+      "id": "0"
+    }
+  ],
+  "main": "src/index.ts",
+  "vendetta": {
+    "icon": "ic_edit_24px"
+  }
+}
